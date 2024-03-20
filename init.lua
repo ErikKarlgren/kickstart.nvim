@@ -232,6 +232,7 @@ vim.o.mouse = 'a'
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
+--  From myself: you need to install an appropiate clipboard tool (wayland: wl-clipboard)
 vim.o.clipboard = 'unnamedplus'
 
 -- Enable break indent
