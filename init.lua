@@ -93,6 +93,24 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
+-- Make neovim take care of wrapping text for man pages
+vim.g.man_hardwrap = 0
+
+vim.api.nvim_create_autocmd('VimEnter', {
+  callback = function()
+    local log = io.open('/tmp/nvim-debug.log', 'a')
+    if log then
+      log:write('Starting mode: ' .. vim.fn.mode() .. '\n')
+      log:write('man_hardwrap: ' .. vim.inspect(vim.g.man_hardwrap) .. '\n')
+      log:write('filetype: ' .. vim.bo.filetype .. '\n')
+      log:write('args: ' .. vim.inspect(vim.v.argv) .. '\n') -- Show startup arguments
+      log:write('is_man: ' .. tostring(vim.fn.exists ':Man') .. '\n') -- Check if Man command exists
+      log:write '---\n'
+      log:close()
+    end
+  end,
+})
+
 -- [[ Setting options ]]
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
