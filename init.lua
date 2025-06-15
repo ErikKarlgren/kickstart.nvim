@@ -978,5 +978,42 @@ require('lazy').setup({
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 
--- My own functions
-vim.api.nvim_create_user_command('Autosave', 'autocmd TextChanged,TextChangedI ' .. vim.fn.expand '%' .. ' silent write', {})
+---------------------------------------------------------------------------------------------------
+--- MY OWN FUNCTIONS
+---------------------------------------------------------------------------------------------------
+
+-- Simple autosave implementation for init.lua
+local autosave_group = vim.api.nvim_create_augroup('MyAutosave', { clear = true })
+local autosave_active = {}
+
+vim.api.nvim_create_user_command('Autosave', function()
+  local bufnr = vim.api.nvim_get_current_buf()
+
+  if autosave_active[bufnr] then
+    -- It's a toggle! Disable if already active
+    vim.api.nvim_del_autocmd(autosave_active[bufnr])
+    autosave_active[bufnr] = nil
+    vim.notify('Autosave disabled', vim.log.levels.INFO)
+    return
+  end
+
+  local filename = vim.api.nvim_buf_get_name(bufnr)
+  if filename == '' then
+    vim.notify('Cannot autosave: no filename', vim.log.levels.WARN)
+    return
+  end
+
+  autosave_active[bufnr] = vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI' }, {
+    group = autosave_group,
+    buffer = bufnr,
+    callback = function()
+      if vim.bo[bufnr].modified then
+        vim.cmd 'silent write'
+        -- Optional: Comment out this line if notifications get annoying
+        vim.notify('Autosaved: ' .. vim.fn.fnamemodify(filename, ':t'), vim.log.levels.INFO)
+      end
+    end,
+  })
+
+  vim.notify('Autosave enabled: ' .. vim.fn.fnamemodify(filename, ':t'), vim.log.levels.INFO)
+end, { desc = 'Toggle autosave for current buffer' })
