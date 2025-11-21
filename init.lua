@@ -965,3 +965,26 @@ require('lazy').setup({
 vim.diagnostic.config({
   virtual_lines = true
 })
+
+local function sort_qf_by_filename()
+  local qfl = vim.fn.getqflist()
+  table.sort(qfl, function(a, b)
+    local name_a = vim.fn.bufname(a.bufnr)
+    local name_b = vim.fn.bufname(b.bufnr)
+    -- fallback if bufname is empty
+    if name_a == '' and a.filename then name_a = a.filename end
+    if name_b == '' and b.filename then name_b = b.filename end
+
+    if name_a == name_b then
+      -- tie-break: by line number
+      return (a.lnum or 0) < (b.lnum or 0)
+    else
+      return name_a < name_b
+    end
+  end)
+
+  vim.fn.setqflist(qfl, 'r')
+end
+
+-- make a command to sort manually
+vim.api.nvim_create_user_command("SortQFByFile", sort_qf_by_filename, {})
