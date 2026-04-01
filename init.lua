@@ -786,9 +786,9 @@ require('lazy').setup({
         -- No, but seriously. Please read `:help ins-completion`, it is really good!
         mapping = cmp.mapping.preset.insert {
           -- Select the [n]ext item
-          ['<C-n>'] = cmp.mapping.select_next_item(),
+          --['<C-n>'] = cmp.mapping.select_next_item(),
           -- Select the [p]revious item
-          ['<C-p>'] = cmp.mapping.select_prev_item(),
+          --['<C-p>'] = cmp.mapping.select_prev_item(),
 
           -- Scroll the documentation window [b]ack / [f]orward
           ['<C-b>'] = cmp.mapping.scroll_docs(-4),
@@ -797,8 +797,7 @@ require('lazy').setup({
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
-          ['<C-y>'] = cmp.mapping.confirm { select = true },
-
+          --['<C-y>'] = cmp.mapping.confirm { select = true },
           -- If you prefer more traditional completion keymaps,
           -- you can uncomment the following lines
           -- NOTE: Those in kickstarter.nvim changed <Enter> to <C-y>, which I hate tbh
@@ -858,7 +857,7 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-storm'
+      vim.cmd.colorscheme 'tokyonight-moon'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
@@ -946,6 +945,13 @@ require('lazy').setup({
   require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  {
+    -- Add better clipboard support to wsl
+    'bkoropoff/clipipe',
+    opts = {
+      start_timeout = 1000,
+    }
+  },
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
@@ -978,42 +984,30 @@ require('lazy').setup({
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 
----------------------------------------------------------------------------------------------------
---- MY OWN FUNCTIONS
----------------------------------------------------------------------------------------------------
+-- Erik
+vim.diagnostic.config({
+  virtual_lines = true
+})
 
--- Simple autosave implementation for init.lua
-local autosave_group = vim.api.nvim_create_augroup('MyAutosave', { clear = true })
-local autosave_active = {}
+local function sort_qf_by_filename()
+  local qfl = vim.fn.getqflist()
+  table.sort(qfl, function(a, b)
+    local name_a = vim.fn.bufname(a.bufnr)
+    local name_b = vim.fn.bufname(b.bufnr)
+    -- fallback if bufname is empty
+    if name_a == '' and a.filename then name_a = a.filename end
+    if name_b == '' and b.filename then name_b = b.filename end
 
-vim.api.nvim_create_user_command('Autosave', function()
-  local bufnr = vim.api.nvim_get_current_buf()
+    if name_a == name_b then
+      -- tie-break: by line number
+      return (a.lnum or 0) < (b.lnum or 0)
+    else
+      return name_a < name_b
+    end
+  end)
 
-  if autosave_active[bufnr] then
-    -- It's a toggle! Disable if already active
-    vim.api.nvim_del_autocmd(autosave_active[bufnr])
-    autosave_active[bufnr] = nil
-    vim.notify('Autosave disabled', vim.log.levels.INFO)
-    return
-  end
+  vim.fn.setqflist(qfl, 'r')
+end
 
-  local filename = vim.api.nvim_buf_get_name(bufnr)
-  if filename == '' then
-    vim.notify('Cannot autosave: no filename', vim.log.levels.WARN)
-    return
-  end
-
-  autosave_active[bufnr] = vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI' }, {
-    group = autosave_group,
-    buffer = bufnr,
-    callback = function()
-      if vim.bo[bufnr].modified then
-        vim.cmd 'silent write'
-        -- Optional: Comment out this line if notifications get annoying
-        vim.notify('Autosaved: ' .. vim.fn.fnamemodify(filename, ':t'), vim.log.levels.INFO)
-      end
-    end,
-  })
-
-  vim.notify('Autosave enabled: ' .. vim.fn.fnamemodify(filename, ':t'), vim.log.levels.INFO)
-end, { desc = 'Toggle autosave for current buffer' })
+-- make a command to sort manually
+vim.api.nvim_create_user_command("SortQFByFile", sort_qf_by_filename, {})
