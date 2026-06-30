@@ -1031,4 +1031,4 @@ local function sort_qf_by_filename()
 end
 
 -- make a command to sort manually
-vim.api.nvim_create_user_command("SortQFByFile", sort_qf_by_filename, {})
+vim.api.nvim_create_user_command('SortQFByFile', sort_qf_by_filename, {})
