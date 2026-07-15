@@ -1018,10 +1018,6 @@ require('lazy').setup({
 -- vim: ts=2 sts=2 sw=2 et
 
 -- Erik
-vim.diagnostic.config({
-  virtual_lines = true
-})
-
 local function sort_qf_by_filename()
   local qfl = vim.fn.getqflist()
   table.sort(qfl, function(a, b)
