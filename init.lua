@@ -963,11 +963,6 @@ require('lazy').setup({
   require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
   {
-    -- Add better clipboard support to wsl
-    'bkoropoff/clipipe',
-    opts = {
-      start_timeout = 1000,
-    }
   {
     'folke/flash.nvim',
     event = 'VeryLazy',
