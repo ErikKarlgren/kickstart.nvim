@@ -993,6 +993,10 @@ require('lazy').setup({
   },
   {
     'nvim-treesitter/nvim-treesitter-context',
+    opts = {
+      max_lines = 8,
+      multiline_threshold = 6,
+    },
   },
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
