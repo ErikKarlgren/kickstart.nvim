@@ -998,6 +998,9 @@ require('lazy').setup({
       multiline_threshold = 6,
     },
   },
+  {
+    'folke/zen-mode.nvim',
+  },
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
