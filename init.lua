@@ -96,6 +96,13 @@ vim.g.have_nerd_font = true
 -- Make neovim take care of wrapping text for man pages
 vim.g.man_hardwrap = 0
 
+-- Enable autoindentation for new lines
+vim.g.autoindent = true
+-- Set "soft" tab width to 4 spaces (i.e., when pressing <Tab> in insert mode, it will insert 4 spaces, but tabs will still be 8 spaces wide)
+vim.g.softtabstop = 4
+-- To make ">>" insert four columns worth of indent
+vim.g.shiftwidth = 4
+
 vim.api.nvim_create_autocmd('VimEnter', {
   callback = function()
     local log = io.open('/tmp/nvim-debug.log', 'a')
