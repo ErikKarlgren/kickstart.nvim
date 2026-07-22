@@ -648,8 +648,11 @@ require('lazy').setup {
       --  See `:help lsp-config` for information about keys and how to configure
       ---@type table<string, vim.lsp.Config>
       local servers = {
+        bashls = {},
+        black = {},
         clangd = {},
-        -- gopls = {},
+        cpplint = {},
+        docker_language_server = {},
         harper_ls = {
           filetypes = {
             'markdown',
@@ -673,9 +676,16 @@ require('lazy').setup {
           },
         },
         htmlbeautifier = {},
+        intelephense = {
+          environment = {
+            phpVersion = '7.3.33',
+          },
+        },
+        marksman = {},
         pyright = {},
         rust_analyzer = {},
-        bashls = {},
+        shellcheck = {},
+
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
         --    https://github.com/pmizio/typescript-tools.nvim
