@@ -650,6 +650,29 @@ require('lazy').setup {
       local servers = {
         clangd = {},
         -- gopls = {},
+        harper_ls = {
+          filetypes = {
+            'markdown',
+            'text',
+            'gitcommit',
+          },
+          linters = {
+            SpellCheck = true,
+            LongSentences = false,
+            SentenceCapitalization = false,
+            Spaces = false,
+            SpelledNumbers = false,
+            RepeatedWords = true,
+            AnA = true,
+            UnclosedQuotes = true,
+            CorrectNumberSuffix = true,
+            WrongApostrophe = false,
+          },
+          markdown = {
+            IgnoreLinkTitle = true,
+          },
+        },
+        htmlbeautifier = {},
         pyright = {},
         rust_analyzer = {},
         bashls = {},
