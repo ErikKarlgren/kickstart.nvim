@@ -102,6 +102,9 @@ vim.g.autoindent = true
 vim.g.softtabstop = 4
 -- To make ">>" insert four columns worth of indent
 vim.g.shiftwidth = 4
+-- Disable autoformatting on save. To enable it, place an .nvim.lua file in the root directory of
+-- all your personal projects and set `vim.g.autoformat = true` in that file
+vim.g.autoformat = false
 
 vim.api.nvim_create_autocmd('VimEnter', {
   callback = function()
@@ -727,18 +730,18 @@ require('lazy').setup {
     opts = {
       notify_on_error = false,
       format_on_save = function(bufnr)
+        -- Autoformatting is automatically disabled as explained above in this config
+        if vim.b[bufnr].autoformat == false then return nil end
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
         local disable_filetypes = { c = true, cpp = true }
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          return nil
-        else
-          return {
-            timeout_ms = 500,
-            lsp_format = 'fallback',
-          }
-        end
+        if disable_filetypes[vim.bo[bufnr].filetype] then return nil end
+
+        return {
+          timeout_ms = 500,
+          lsp_format = 'fallback',
+        }
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
