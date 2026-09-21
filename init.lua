@@ -653,28 +653,6 @@ require('lazy').setup {
         clangd = {},
         cpplint = {},
         docker_language_server = {},
-        harper_ls = {
-          filetypes = {
-            'markdown',
-            'text',
-            'gitcommit',
-          },
-          linters = {
-            SpellCheck = true,
-            LongSentences = false,
-            SentenceCapitalization = false,
-            Spaces = false,
-            SpelledNumbers = false,
-            RepeatedWords = true,
-            AnA = true,
-            UnclosedQuotes = true,
-            CorrectNumberSuffix = true,
-            WrongApostrophe = false,
-          },
-          markdown = {
-            IgnoreLinkTitle = true,
-          },
-        },
         htmlbeautifier = {},
         intelephense = {
           environment = {
@@ -1066,6 +1044,9 @@ require('lazy').setup {
   },
   {
     'folke/zen-mode.nvim',
+  },
+  {
+    'github/copilot.vim',
   },
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
